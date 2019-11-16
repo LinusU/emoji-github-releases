@@ -1,0 +1,14 @@
+{
+  "name": "emoji-github-releases",
+  "version": "0.0.0",
+  "license": "MIT",
+  "repository": "LinusU/emoji-github-releases",
+  "bin": "cli.js",
+  "dependencies": {
+    "@octokit/rest": "^16.34.1",
+    "application-config": "^2.0.0",
+    "chalk": "^3.0.0",
+    "execa": "^3.2.0",
+    "print-diff": "^0.1.1"
+  }
+}
