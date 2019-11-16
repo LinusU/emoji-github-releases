@@ -5,10 +5,10 @@
   "repository": "LinusU/emoji-github-releases",
   "bin": "cli.js",
   "dependencies": {
-    "@octokit/rest": "^16.34.1",
+    "@octokit/rest": "^16.35.0",
     "application-config": "^2.0.0",
     "chalk": "^3.0.0",
-    "execa": "^3.2.0",
-    "print-diff": "^0.1.1"
+    "execa": "^3.3.0",
+    "print-diff": "^1.0.0"
   }
 }
