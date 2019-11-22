@@ -1,57 +1,41 @@
-# 2.0.0 / 2019-11-09
+# Emoji Github Releases
 
-## 💥 Breaking Changes
+Small tool to automatically update a package GitHub Releases from an [emoji-commit](https://github.com/LinusU/emoji-commit) Git history.
 
-- Drop support for Node.js <8
+## Installation
 
-  Migration Guide:
+```sh
+npm install --global emoji-github-releases
+```
 
-  Upgrade to Node.js 8.0.0 or newer.
+## Usage
 
-- Build using N-API instead of NAN
+Just run the command in a Git repository that has a GitHub `origin` remote. It will prompt you to confirm every release it wants to create or update.
 
-  Migration Guide:
+The first time you run the program it will instruct you how to create a GitHub access token, which it will then save for subsequent runs.
 
-  - Upgrade to at least Node.js 8.6.0 for continued support.
-  - The `data` parameter to `encode` does no longer accept 16-bit, 32-bit, or float arrays.
-  - The output from `decode` is now an instance of `ImageData`, meaning that `data` is an `Uint8ClampedArray`.
+```sh
+emoji-github-releases
+```
 
+## Example
 
-## 🐛 Fixes
-
-- Hold references to buffers while working
-
-# 1.3.0 / 2019-11-08
-
-## 🎉 Enhancements
-
-- Upgrade lodepng to 20190914
-
-# 1.2.0 / 2018-08-08
+```sh
+$ emoji-github-releases
+Using GitHub token from config at /Users/linus/Library/Application Support/emoji-github-releases/config.json
+============================== v0.1.0 ==============================
+🚢 0.1.0 / 2019-11-22
 
 ## 🎉 Enhancements
 
-- Improve TypeScript typings
-
-# 1.1.0 / 2017-08-20
-
-## 🎉 Enhancements
-
-- Add TypeScript typings
-
-# 1.0.0 / 2017-08-17
-
-## 💥 Breaking Changes
-
-- Switch to promise based interface
-
-## 🎉 Enhancements
-
-- Update all dependencies
+- Add initial implementation
 
 ## 🌹 Internal Changes
 
-- Cleanup git ignore file
-- Cleanup package.json
-- Change casing of readme file
-- Prettify binding.gyp
+- Add Travis CI integration
+============================== v0.1.0 ==============================
+Create this release [y,n]? y
+All done
+```
+
+![Example Rendering](https://user-images.githubusercontent.com/189580/69447431-66b57680-0d4e-11ea-9441-2af768f8f738.png)
