@@ -9,6 +9,7 @@
     "application-config": "^2.0.0",
     "chalk": "^3.0.0",
     "execa": "^3.3.0",
+    "git-log": "^1.0.0-beta.1",
     "print-diff": "^1.0.0"
   }
 }

@@ -2,15 +2,13 @@
 
 const applicationConfig = require('application-config')('emoji-github-releases')
 const execa = require('execa')
+const gitLog = require('git-log')
 const Octokit = require('@octokit/rest')
 const printDiff = require('print-diff')
 const readline = require('readline')
 
-const delim1 = 'E2B4D2F3-B7AF-4377-BF0F-D81F4E0723F3'
-const delim2 = '25B7DA41-228B-4679-B2A2-86E328D3C3DE'
-
 function formatRelease ({ breaking, features, fixes, internal }) {
-  if (breaking.length === 0 && features.length === 1 && fixes.length === 0 && internal.length === 0 && features[0][0] === '🎉 Add initial implementation') {
+  if (breaking.length === 0 && features.length === 1 && fixes.length === 0 && internal.length === 0 && features[0].subject === '🎉 Add initial implementation') {
     return '## 🎉 Initial release\n'
   }
 
@@ -20,10 +18,10 @@ function formatRelease ({ breaking, features, fixes, internal }) {
     result += '## 💥 Breaking Changes\n\n'
 
     for (const commit of breaking) {
-      result += `- ${commit[0].replace('💥 ', '')}\n`
+      result += `- ${commit.subject.replace('💥 ', '')}\n`
 
-      if (/Migration Guide:/i.test(commit[2])) {
-        result += `\n  ${commit[2].replace(/.*Migration Guide:/img, 'Migration Guide:').replace(/^(?!\s*$)/gm, '  ').trim()}\n\n`
+      if (/Migration Guide:/i.test(commit.body)) {
+        result += `\n  ${commit.body.replace(/.*Migration Guide:/img, 'Migration Guide:').replace(/^(?!\s*$)/gm, '  ').trim()}\n\n`
       }
     }
 
@@ -34,7 +32,7 @@ function formatRelease ({ breaking, features, fixes, internal }) {
     result += '## 🎉 Enhancements\n\n'
 
     for (const commit of features) {
-      result += `- ${commit[0].replace('🎉 ', '')}\n`
+      result += `- ${commit.subject.replace('🎉 ', '')}\n`
     }
 
     result += '\n'
@@ -44,7 +42,7 @@ function formatRelease ({ breaking, features, fixes, internal }) {
     result += '## 🐛 Fixes\n\n'
 
     for (const commit of fixes) {
-      result += `- ${commit[0].replace('🐛 ', '')}\n`
+      result += `- ${commit.subject.replace('🐛 ', '')}\n`
     }
 
     result += '\n'
@@ -54,7 +52,7 @@ function formatRelease ({ breaking, features, fixes, internal }) {
     result += '## 🌹 Internal Changes\n\n'
 
     for (const commit of internal) {
-      result += `- ${commit[0].replace('🌹 ', '')}\n`
+      result += `- ${commit.subject.replace('🌹 ', '')}\n`
     }
 
     result += '\n'
@@ -64,35 +62,34 @@ function formatRelease ({ breaking, features, fixes, internal }) {
 }
 
 async function readLocalReleases () {
-  const { stdout } = await execa('git', ['log', '--no-merges', `--format=format:%s${delim1}%cI${delim1}%b${delim2}`])
-  const commits = stdout.split(delim2).filter(line => line.includes(delim1)).map(line => line.trim().split(delim1))
+  const commits = await gitLog()
 
   let currentVersion
   const versionChanges = new Map()
 
   for (const commit of commits) {
-    if (commit[0].startsWith('🚢 ')) {
-      currentVersion = commit[0].replace('🚢 ', '')
-      versionChanges.set(currentVersion, { version: currentVersion, date: commit[1].slice(0, 10), breaking: [], features: [], fixes: [], internal: [] })
+    if (commit.subject.startsWith('🚢 ')) {
+      currentVersion = commit.subject.replace('🚢 ', '')
+      versionChanges.set(currentVersion, { version: currentVersion, date: commit.date.toISOString().slice(0, 10), breaking: [], features: [], fixes: [], internal: [] })
     }
 
     if (!currentVersion) {
       continue
     }
 
-    if (commit[0].startsWith('💥 ')) {
+    if (commit.subject.startsWith('💥 ')) {
       versionChanges.get(currentVersion).breaking.unshift(commit)
     }
 
-    if (commit[0].startsWith('🎉 ')) {
+    if (commit.subject.startsWith('🎉 ')) {
       versionChanges.get(currentVersion).features.unshift(commit)
     }
 
-    if (commit[0].startsWith('🐛 ')) {
+    if (commit.subject.startsWith('🐛 ')) {
       versionChanges.get(currentVersion).fixes.unshift(commit)
     }
 
-    if (commit[0].startsWith('🌹 ')) {
+    if (commit.subject.startsWith('🌹 ')) {
       versionChanges.get(currentVersion).internal.unshift(commit)
     }
   }
