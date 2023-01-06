@@ -1,11 +1,13 @@
 #!/usr/bin/env node
 
-const applicationConfig = require('application-config')('emoji-github-releases')
-const execa = require('execa')
-const gitLog = require('git-log')
-const Octokit = require('@octokit/rest')
-const printDiff = require('print-diff')
-const readline = require('readline')
+import { Octokit } from '@octokit/rest'
+import createApplicationConfig from 'application-config'
+import { execa } from 'execa'
+import gitLog from 'git-log'
+import readline from 'node:readline'
+import { printInlineDiff, printUnifiedDiff } from 'print-diff'
+
+const applicationConfig = createApplicationConfig('emoji-github-releases')
 
 function formatRelease ({ breaking, features, fixes, internal }) {
   if (breaking.length === 0 && features.length === 1 && fixes.length === 0 && internal.length === 0 && features[0].subject === '🎉 Add initial implementation') {
@@ -144,7 +146,7 @@ async function main () {
       await applicationConfig.write(cfg)
     }
 
-    const gh = new Octokit({ auth: () => 'token ' + cfg.githubToken })
+    const gh = new Octokit({ auth: cfg.githubToken })
 
     const { owner, repo } = await getRepo()
     const actual = await getRemoteReleases(gh, { owner, repo })
@@ -173,8 +175,8 @@ async function main () {
       }
 
       rl.write(`============================== ${item.tag} ==============================`)
-      if (current.name !== item.name) printDiff.inline(current.name, item.name, rl)
-      if (current.body !== item.body) printDiff.unified(current.body, item.body, rl)
+      if (current.name !== item.name) printInlineDiff(current.name, item.name, rl)
+      if (current.body !== item.body) printUnifiedDiff(current.body, item.body, rl)
       rl.write(`============================== ${item.tag} ==============================\n`)
       const shouldUpdate = await questionYesNo(rl, 'Update this release [y,n]? ')
 

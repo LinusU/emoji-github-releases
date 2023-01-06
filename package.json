@@ -4,12 +4,16 @@
   "license": "MIT",
   "repository": "LinusU/emoji-github-releases",
   "bin": "cli.js",
+  "type": "module",
   "dependencies": {
-    "@octokit/rest": "^16.35.0",
-    "application-config": "^2.0.0",
-    "chalk": "^3.0.0",
-    "execa": "^3.3.0",
-    "git-log": "^1.0.0-beta.1",
-    "print-diff": "^1.0.0"
+    "@octokit/rest": "^19.0.5",
+    "application-config": "^3.0.0",
+    "chalk": "^5.2.0",
+    "execa": "^6.1.0",
+    "git-log": "^1.0.0-rc.1",
+    "print-diff": "^2.0.0"
+  },
+  "engines": {
+    "node": "^14.18.0 || ^16.14.0 || >=18.0.0"
   }
 }
