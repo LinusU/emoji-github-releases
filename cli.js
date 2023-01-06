@@ -5,6 +5,7 @@ import createApplicationConfig from 'application-config'
 import { execa } from 'execa'
 import gitLog from 'git-log'
 import readline from 'node:readline'
+import fetch from 'node-fetch'
 import { printInlineDiff, printUnifiedDiff } from 'print-diff'
 
 const applicationConfig = createApplicationConfig('emoji-github-releases')
@@ -146,7 +147,7 @@ async function main () {
       await applicationConfig.write(cfg)
     }
 
-    const gh = new Octokit({ auth: cfg.githubToken })
+    const gh = new Octokit({ auth: cfg.githubToken, request: { fetch } })
 
     const { owner, repo } = await getRepo()
     const actual = await getRemoteReleases(gh, { owner, repo })
