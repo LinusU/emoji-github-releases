@@ -72,7 +72,7 @@ async function readLocalReleases () {
 
   for (const commit of commits) {
     if (commit.subject.startsWith('🚢 ')) {
-      currentVersion = commit.subject.replace('🚢 ', '')
+      currentVersion = commit.subject.replace(/^🚢 v?/, '')
       versionChanges.set(currentVersion, { version: currentVersion, date: commit.date.toISOString().slice(0, 10), breaking: [], features: [], fixes: [], internal: [] })
     }
 
